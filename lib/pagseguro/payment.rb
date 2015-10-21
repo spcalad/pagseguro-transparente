@@ -71,6 +71,12 @@ module PagSeguro
       params = Serializer.new(self).to_params
       PagSeguro::Transaction.new post('/transactions', API_V2 ,account, params).parsed_response
     end
+    
+    # Calls the PagSeguro web service and register this request for pre_approval.
+    def request_pre_approval(account = nil)
+      params = Serializer.new(self).to_params
+      PagSeguro::Transaction.new post('/preapprovals/request', API_V2 ,account, params).parsed_response
+    end
 
     def initialize(options = {})
       @currency = "BRL"
