@@ -18,8 +18,8 @@ module PagSeguro
     validates_presence_of :day_of_year, if: :yearly?
     validates_format_of :day_of_year, with: /\A\d{2}-\d{2}\z/, if: :yearly?
     validate :initial_date_range, :final_date_range
-    validates :max_amount_per_period
-    validates :max_total_amount
+    validates_presence_of :max_amount_per_period
+    validates_presence_of :max_total_amount
 
     def initialize(options = {})
       @name = options[:name]
