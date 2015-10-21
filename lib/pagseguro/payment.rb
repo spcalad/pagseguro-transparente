@@ -6,6 +6,7 @@ module PagSeguro
     validates_presence_of :bank, if: :paid_with_eft?
     validates_presence_of :credit_card, if: :paid_with_card?
     validates_inclusion_of :payment_method, in: %w(creditCard boleto eft)
+    validate :valid_pre_approval
 
     # Determines for which url PagSeguro will send the order related
     # notifications codes.
@@ -13,6 +14,8 @@ module PagSeguro
     # request will be send to this url. You can use that for update the related
     # order.
     attr_accessor :notification_url
+    
+    attr_accessor :pre_approval
 
     # Set the payment currency.
     # Defaults to BRL.
@@ -77,6 +80,7 @@ module PagSeguro
       @reference = options[:reference] if options[:reference]
       @extra_amount = options[:extra_amount] if options[:extra_amount]
       @receiver_email = options[:receiver_email] if options[:receiver_email]
+      @pre_approval = options[:pre_approval]
     end
 
     private
@@ -86,6 +90,12 @@ module PagSeguro
 
     def paid_with_eft?
       payment_method == "eft"
+    end
+    
+    def valid_pre_approval
+      if pre_approval && !pre_approval.valid?
+        errors.add(:pre_approval, " must be valid")
+      end
     end
   end
 end
