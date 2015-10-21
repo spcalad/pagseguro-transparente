@@ -1,99 +1,87 @@
 module PagSeguro
-  class Payment < Request
+  class PreApproval
     include ActiveModel::Validations
+    extend PagSeguro::ConvertFieldToDigit
 
-    validates_presence_of :currency, :payment_method, :items, :sender, :shipping
-    validates_presence_of :bank, if: :paid_with_eft?
-    validates_presence_of :credit_card, if: :paid_with_card?
-    validates_inclusion_of :payment_method, in: %w(creditCard boleto eft)
-    validate :valid_pre_approval
+    PERIOD_TYPES = %w(weekly monthly bimonthly trimonthly semiannually yearly)
+    DAYS_OF_WEEK = %w(monday tuesday wednesday thursday friday saturday sunday)
+    DATE_RANGE = 17856.hours
 
-    # Determines for which url PagSeguro will send the order related
-    # notifications codes.
-    # Optional. Any change happens in the transaction status, a new notification
-    # request will be send to this url. You can use that for update the related
-    # order.
-    attr_accessor :notification_url, :pre_approval
+    attr_accessor :name, :details, :amount_per_payment, :period,
+                  :day_of_week, :day_of_month, :day_of_year, :initial_date,
+                  :final_date, :max_amount_per_period, :max_total_amount,
+                  :review_URL
 
-    # Set the payment currency.
-    # Defaults to BRL.
-    attr_accessor :currency
+    attr_reader_as_digit :amount_per_payment, :max_amount_per_period, :max_total_amount
 
-    # Set the payment method.
-    # Payment method should be creditCard, boleto or eft.
-    attr_accessor :payment_method
-
-    # Set the payment mode
-    attr_accessor :payment_mode
-
-    # Set the reference code.
-    # Optional. You can use the reference code to store an identifier so you can
-    # associate the PagSeguro transaction to a transaction in your system.
-    # Tipically this is the order id.
-    attr_accessor :reference
-
-    # Get the payment sender.
-    attr_accessor :sender
-
-
-    # Get the payment sender.
-    attr_accessor :credit_card
-
-    attr_accessor :receiver_email
-
-    # Set the bank name.
-    # Optional. Bank name should be used for eft payment method
-    # to specify which the buyer should be redirect.
-    attr_accessor :bank
-
-    attr_accessor :shipping
-
-    attr_accessor :extra_amount
-
-    # Set the max installment with no interest.
-    # Optional.
-    attr_accessor :max_installment_no_interest
-
-    # Products/items in this payment request.
-    def items
-      @items ||= Items.new
-    end
-
-    # Normalize the items list.
-    def items=(_items)
-      _items.each {|item| items << item }
-    end
-
-    # Calls the PagSeguro web service and register this request for payment.
-    def transaction(account = nil)
-      params = Serializer.new(self).to_params
-      PagSeguro::Transaction.new post('/transactions', API_V2 ,account, params).parsed_response
-    end
+    validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period
+    validates_inclusion_of :period, in: PERIOD_TYPES
+    validates_inclusion_of :day_of_week, in: DAYS_OF_WEEK, if: :weekly?
+    validates_inclusion_of :day_of_month, in: (1..28), if: :monthly?
+    validates_presence_of :day_of_year, if: :yearly?
+    validates_format_of :day_of_year, with: /\A\d{2}-\d{2}\z/, if: :yearly?
+    validate :initial_date_range, :final_date_range
+    validates :max_amount_per_period, pagseguro_decimal: true
+    validates :max_total_amount, pagseguro_decimal: true
 
     def initialize(options = {})
-      @currency = "BRL"
-      @payment_mode = 'default'
-      @notification_url = options[:notification_url]
-      @payment_method = options[:payment_method]
-      @reference = options[:reference] if options[:reference]
-      @extra_amount = options[:extra_amount] if options[:extra_amount]
-      @receiver_email = options[:receiver_email] if options[:receiver_email]
-      @pre_approval = options[:pre_approval]
+      @name = options[:name]
+      @details = options[:details]
+      @amount_per_payment = options[:amount_per_payment]
+      @period = options[:period]
+      @day_of_week = options[:day_of_week]
+      @day_of_month = options[:day_of_month]
+      @day_of_year = options[:day_of_year]
+      @initial_date = options[:initial_date]
+      @final_date = options[:final_date]
+      @max_amount_per_period = options[:max_amount_per_period]
+      @max_total_amount = options[:max_total_amount]
+      @review_URL = options[:review_URL]
     end
 
-    private
-    def paid_with_card?
-      payment_method == "creditCard"
+    def period
+      @period.to_s.downcase
     end
 
-    def paid_with_eft?
-      payment_method == "eft"
+    def day_of_week
+      @day_of_week.to_s.downcase
     end
-    
-    def valid_pre_approval
-      if pre_approval && !pre_approval.valid?
-        errors.add(:pre_approval, " must be valid")
+
+    def day_of_year
+      @day_of_year.to_s
+    end
+
+    def initial_date
+      @initial_date.to_datetime if @initial_date.present?
+    end
+
+    def final_date
+      @final_date.to_datetime if @final_date.present?
+    end
+
+    def weekly?
+      period == 'weekly'
+    end
+
+    def monthly?
+      %w(monthly bimonthly trimonthly).include? period
+    end
+
+    def yearly?
+      period == 'yearly'
+    end
+
+    protected
+      def initial_date_range
+        return unless initial_date
+        errors.add(:initial_date) if initial_date < Time.now - 5.minutes
+        errors.add(:initial_date) if initial_date > DATE_RANGE.from_now
       end
-    end
+
+      def final_date_range
+        return unless final_date
+        errors.add(:final_date) if final_date < (initial_date || Time.now) - 5.minutes
+        errors.add(:final_date) if final_date > (initial_date || Time.now) + DATE_RANGE
+      end
   end
 end
