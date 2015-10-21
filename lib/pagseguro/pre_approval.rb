@@ -1,7 +1,6 @@
 module PagSeguro
   class PreApproval
     include ActiveModel::Validations
-    extend PagSeguro::ConvertFieldToDigit
 
     PERIOD_TYPES = %w(weekly monthly bimonthly trimonthly semiannually yearly)
     DAYS_OF_WEEK = %w(monday tuesday wednesday thursday friday saturday sunday)
@@ -11,8 +10,6 @@ module PagSeguro
                   :day_of_week, :day_of_month, :day_of_year, :initial_date,
                   :final_date, :max_amount_per_period, :max_total_amount,
                   :review_URL
-
-    attr_reader_as_digit :amount_per_payment, :max_amount_per_period, :max_total_amount
 
     validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period
     validates_inclusion_of :period, in: PERIOD_TYPES
