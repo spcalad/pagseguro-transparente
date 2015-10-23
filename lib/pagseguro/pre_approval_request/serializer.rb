@@ -56,17 +56,17 @@ module PagSeguro
       def serialize_pre_approval(pre_approval)
         return unless pre_approval
         
-        params[:name] = pre_approval.name
-        params[:details] = pre_approval.details
-        params[:amount_per_payment] = to_amount(pre_approval.amount_per_payment)
-        params[:period] = pre_approval.period
-        params[:day_of_week] = pre_approval.day_of_week
-        params[:day_of_month] = pre_approval.day_of_month
-        params[:day_of_year] = pre_approval.day_of_year
-        params[:initial_date] = pre_approval.initial_date
-        params[:final_date] = pre_approval.final_date
-        params[:max_amount_per_period] = to_amount(pre_approval.max_amount_per_period)
-        params[:max_total_amount] = to_amount(pre_approval.max_total_amount)
+        params[:preApprovalName] = pre_approval.name
+        params[:preApprovalDetails] = pre_approval.details
+        params[:preApprovalAmountPerPayment] = to_amount(pre_approval.amount_per_payment)
+        params[:preApprovalPeriod] = pre_approval.period
+        params[:preApprovalDayOfWeek] = pre_approval.day_of_week
+        params[:preApprovalDayOfMonth] = pre_approval.day_of_month
+        params[:preApprovalDayOfYear] = pre_approval.day_of_year
+        params[:preApprovalInitialDate] = pre_approval.initial_date
+        params[:preApprovalFinalDate] = pre_approval.final_date
+        params[:preApprovalMaxAmountPerPeriod] = to_amount(pre_approval.max_amount_per_period)
+        params[:preApprovalMaxTotalAmount] = to_amount(pre_approval.max_total_amount)
       end
 
       def to_amount(amount)
