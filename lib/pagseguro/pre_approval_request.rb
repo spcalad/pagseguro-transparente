@@ -11,7 +11,12 @@ module PagSeguro
     # Calls the PagSeguro web service and register this request for pre_approval.
     def request_pre_approval(account = nil)
       params = Serializer.new(self).to_params
-      PagSeguro::Transaction.new post('/pre-approvals/request', API_V2 ,account, params).parsed_response
+      response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
+      self.class.checkout_payment_url(code)
+    end
+    
+    def self.checkout_payment_url(code)
+      PagSeguro.api_url(version) +  "/checkout/payment.html?code=#{code}"
     end
 
     def initialize(options = {})
@@ -23,6 +28,24 @@ module PagSeguro
     end
 
     private
+    
+    def code
+      parse_code
+    end
+    
+    def date
+      parse_date
+    end
+    
+    def parse_date
+      DateTime.iso8601(Nokogiri::XML(response.body).css("checkout date").first.content)
+    end
+    
+    def parse_code
+      Nokogiri::XML(response.body).css("checkout code").first.content
+    end
+    
+    
     def valid_pre_approval
       if pre_approval && !pre_approval.valid?
         errors.add(:pre_approval, " must be valid")
