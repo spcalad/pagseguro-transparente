@@ -29,6 +29,7 @@ require "pagseguro/shipping"
 require "pagseguro/installment"
 require "pagseguro/refund"
 require "pagseguro/pre_approval"
+require "pagseguro/pre_approval_request"
 
 I18n.enforce_available_locales = false
 I18n.load_path += Dir[File.expand_path('../../config/locales/*.yml',  __FILE__)]
