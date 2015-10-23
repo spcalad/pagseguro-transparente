@@ -60,12 +60,23 @@ module PagSeguro
     def api_url(version)
       uris.fetch(environment) + version
     end
+    
+    def redirect_url(version)
+      redirect_uris.fetch(environment) + version
+    end
 
     private
     def uris
       @uris ||= {
         production: 'https://ws.pagseguro.uol.com.br/',
         sandbox: 'https://ws.sandbox.pagseguro.uol.com.br/'
+      }
+    end
+    
+    def redirect_uris
+      @uris ||= {
+        production: 'https://pagseguro.uol.com.br/',
+        sandbox: 'https://sandbox.pagseguro.uol.com.br/'
       }
     end
   end
