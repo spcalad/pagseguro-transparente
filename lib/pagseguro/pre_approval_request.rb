@@ -12,6 +12,7 @@ module PagSeguro
     def request_pre_approval(account = nil)
       params = Serializer.new(self).to_params
       response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
+      @response = response
       self.class.checkout_payment_url(code)
     end
     
@@ -30,21 +31,12 @@ module PagSeguro
     private
     
     def code
-      parse_code
+      response['preApprovalRequest']['code']
     end
     
     def date
-      parse_date
+      response['preApprovalRequest']['date']
     end
-    
-    def parse_date
-      DateTime.iso8601(Nokogiri::XML(response.body).css("checkout date").first.content)
-    end
-    
-    def parse_code
-      Nokogiri::XML(response.body).css("checkout code").first.content
-    end
-    
     
     def valid_pre_approval
       if pre_approval && !pre_approval.valid?
