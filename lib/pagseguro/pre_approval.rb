@@ -8,8 +8,7 @@ module PagSeguro
 
     attr_accessor :name, :details, :amount_per_payment, :period,
                   :day_of_week, :day_of_month, :day_of_year, :initial_date,
-                  :final_date, :max_amount_per_period, :max_total_amount,
-                  :review_URL
+                  :final_date, :max_amount_per_period, :max_total_amount
 
     validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period
     validates_inclusion_of :period, in: PERIOD_TYPES
@@ -33,7 +32,6 @@ module PagSeguro
       @final_date = options[:final_date]
       @max_amount_per_period = options[:max_amount_per_period]
       @max_total_amount = options[:max_total_amount]
-      @review_URL = options[:review_URL]
     end
 
     def period

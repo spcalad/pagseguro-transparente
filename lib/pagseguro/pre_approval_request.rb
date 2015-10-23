@@ -5,11 +5,8 @@ module PagSeguro
     validates_presence_of :redirect_url, :pre_approval, :sender
     validate :valid_pre_approval
 
-    attr_accessor :redirect_url
-    
-    attr_accessor :pre_approval
-
-    attr_accessor :sender
+    attr_accessor :redirect_url, :review_url, :sender, :pre_approval,
+                  :reference
 
     # Calls the PagSeguro web service and register this request for pre_approval.
     def request_pre_approval(account = nil)
@@ -19,8 +16,10 @@ module PagSeguro
 
     def initialize(options = {})
       @redirect_url = options[:redirect_url]
+      @review_url = options[:review_url]
       @sender = options[:sender]
       @pre_approval = options[:pre_approval]
+      @reference = options[:reference]
     end
 
     private
