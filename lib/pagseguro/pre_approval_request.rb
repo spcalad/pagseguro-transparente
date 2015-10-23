@@ -14,7 +14,7 @@ module PagSeguro
       response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
       code = response['preApprovalRequest']['code']
       
-      PagSeguro.api_url(version) +  "/checkout/payment.html?code=#{code}"
+      PagSeguro.api_url(API_V2) +  "/checkout/payment.html?code=#{code}"
     end
 
     def initialize(options = {})
