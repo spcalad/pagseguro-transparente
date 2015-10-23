@@ -74,7 +74,7 @@ module PagSeguro
     end
     
     def redirect_uris
-      @uris ||= {
+      @redirect_uris ||= {
         production: 'https://pagseguro.uol.com.br/',
         sandbox: 'https://sandbox.pagseguro.uol.com.br/'
       }
