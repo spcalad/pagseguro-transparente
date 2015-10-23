@@ -12,8 +12,8 @@ module PagSeguro
     def request_pre_approval(account = nil)
       params = Serializer.new(self).to_params
       response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
-      @response = response
-      self.class.checkout_payment_url(code)
+      # @response = response
+      # self.class.checkout_payment_url(code)
     end
     
     def self.checkout_payment_url(code)
