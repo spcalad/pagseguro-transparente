@@ -14,7 +14,8 @@ module PagSeguro
       response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
       code = response['preApprovalRequest']['code']
       
-      PagSeguro.redirect_url(API_V2) +  "/pre-approvals/request.html?code=#{code}"
+      # PagSeguro.redirect_url(API_V2) +  "/pre-approvals/request.html?code=#{code}"
+      'https://sandbox.pagseguro.uol.com.br/v2/pre-approvals/request.html?code=#{code}'
     end
 
     def initialize(options = {})
