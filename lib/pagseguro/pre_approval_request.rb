@@ -11,7 +11,7 @@ module PagSeguro
     # Calls the PagSeguro web service and register this request for pre_approval.
     def request_pre_approval(account = nil)
       params = Serializer.new(self).to_params
-      PagSeguro::Transaction.new post('/pre-approvals/request-', API_V2 ,account, params).parsed_response
+      PagSeguro::Transaction.new post('/pre-approvals/request', API_V2 ,account, params).parsed_response
     end
 
     def initialize(options = {})
