@@ -12,11 +12,8 @@ module PagSeguro
     def request_pre_approval(account = nil)
       params = Serializer.new(self).to_params
       response = post('/pre-approvals/request', API_V2 ,account, params).parsed_response
-      # @response = response
-      # self.class.checkout_payment_url(code)
-    end
-    
-    def self.checkout_payment_url(code)
+      code = response['preApprovalRequest']['code']
+      
       PagSeguro.api_url(version) +  "/checkout/payment.html?code=#{code}"
     end
 
@@ -29,15 +26,7 @@ module PagSeguro
     end
 
     private
-    
-    def code
-      response['preApprovalRequest']['code']
-    end
-    
-    def date
-      response['preApprovalRequest']['date']
-    end
-    
+  
     def valid_pre_approval
       if pre_approval && !pre_approval.valid?
         errors.add(:pre_approval, " must be valid")
