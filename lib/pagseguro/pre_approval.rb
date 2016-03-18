@@ -8,17 +8,15 @@ module PagSeguro
 
     attr_accessor :name, :details, :amount_per_payment, :period,
                   :day_of_week, :day_of_month, :day_of_year, :initial_date,
-                  :final_date, :max_amount_per_period, :max_total_amount
+                  :final_date, :max_amount_per_period, :max_total_amount, :charge
 
-    validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period
+    validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period, :charge
     validates_inclusion_of :period, in: PERIOD_TYPES
     validates_inclusion_of :day_of_week, in: DAYS_OF_WEEK, if: :weekly?
     validates_inclusion_of :day_of_month, in: (1..28), if: :monthly?
     validates_presence_of :day_of_year, if: :yearly?
     validates_format_of :day_of_year, with: /\A\d{2}-\d{2}\z/, if: :yearly?
     validate :initial_date_range, :final_date_range
-    validates_presence_of :max_amount_per_period
-    validates_presence_of :max_total_amount
 
     def initialize(options = {})
       @name = options[:name]
@@ -32,6 +30,7 @@ module PagSeguro
       @final_date = options[:final_date]
       @max_amount_per_period = options[:max_amount_per_period]
       @max_total_amount = options[:max_total_amount]
+      @charge = options[:charge]
     end
 
     def period

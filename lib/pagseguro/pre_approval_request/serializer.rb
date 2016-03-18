@@ -13,7 +13,7 @@ module PagSeguro
         params[:redirect_url] = pre_approval_request.redirect_url
         params[:review_url] = pre_approval_request.review_url
         params[:reference] = pre_approval_request.reference
-        
+
         serialize_sender(pre_approval_request.sender)
         serialize_pre_approval(pre_approval_request.pre_approval)
 
@@ -52,10 +52,10 @@ module PagSeguro
         params[:senderAreaCode] = phone.area_code
         params[:senderPhone] = phone.number
       end
-      
+
       def serialize_pre_approval(pre_approval)
         return unless pre_approval
-        
+
         params[:preApprovalName] = pre_approval.name
         params[:preApprovalDetails] = pre_approval.details
         params[:preApprovalAmountPerPayment] = to_amount(pre_approval.amount_per_payment)
@@ -67,6 +67,7 @@ module PagSeguro
         params[:preApprovalFinalDate] = pre_approval.final_date
         params[:preApprovalMaxAmountPerPeriod] = to_amount(pre_approval.max_amount_per_period)
         params[:preApprovalMaxTotalAmount] = to_amount(pre_approval.max_total_amount)
+        params[:preAppovalCharge] = pre_approval.charge
       end
 
       def to_amount(amount)
