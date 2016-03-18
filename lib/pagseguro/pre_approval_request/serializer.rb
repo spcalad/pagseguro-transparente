@@ -67,7 +67,7 @@ module PagSeguro
         params[:preApprovalFinalDate] = pre_approval.final_date
         params[:preApprovalMaxAmountPerPeriod] = to_amount(pre_approval.max_amount_per_period)
         params[:preApprovalMaxTotalAmount] = to_amount(pre_approval.max_total_amount)
-        params[:preAppovalCharge] = pre_approval.charge
+        params[:preApprovalCharge] = pre_approval.charge
       end
 
       def to_amount(amount)
