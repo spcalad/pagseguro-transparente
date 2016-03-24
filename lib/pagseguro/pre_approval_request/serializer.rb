@@ -34,16 +34,21 @@ module PagSeguro
         params[:senderEmail] =  sender.email
         params[:senderHash] =  sender.hash_id
 
-        serialize_document(sender.document)
+        serialize_address(sender.address)
         serialize_phone(sender.phone)
       end
 
-      def serialize_document(document)
-        if document.cpf?
-          params[:senderCPF] = document.value
-        else
-          params[:senderCNPJ] = document.value
-        end
+      def serialize_address(address)
+          return unless address
+
+          params[:street] = address.street
+          params[:number] = address.number
+          params[:complement] = address.complement
+          params[:district] = address.district
+          params[:postalCode] = address.postal_code
+          params[:city] = address.city
+          params[:state] = address.state
+          params[:country] = address.country
       end
 
       def serialize_phone(phone)
@@ -65,7 +70,6 @@ module PagSeguro
         params[:preApprovalDayOfYear] = pre_approval.day_of_year
         params[:preApprovalInitialDate] = pre_approval.initial_date
         params[:preApprovalFinalDate] = pre_approval.final_date
-        params[:preApprovalMaxAmountPerPeriod] = to_amount(pre_approval.max_amount_per_period)
         params[:preApprovalMaxTotalAmount] = to_amount(pre_approval.max_total_amount)
         params[:preApprovalCharge] = pre_approval.charge
       end

@@ -3,10 +3,10 @@ module PagSeguro
     include ActiveModel::Validations
     extend Forwardable
 
-    def_delegators :document, :value
     def_delegators :phone, :area_code, :number
+    def_delegators :address, :street, :number, :complement, :district, :postal_code, :city, :state, :country
 
-    validates_presence_of :email, :name, :hash_id, :document, :phone
+    validates_presence_of :email, :name, :hash_id, :phone, :address
 
     # Set the sender e-mail.
     attr_accessor :email
@@ -22,6 +22,9 @@ module PagSeguro
 
     # Get the sender phone.
     attr_accessor :phone
+
+    # Get the sender address.
+    attr_accessor :address
 
     def initialize(options = {})
       @email = options[:email]
