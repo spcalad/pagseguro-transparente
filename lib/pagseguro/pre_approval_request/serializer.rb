@@ -32,7 +32,6 @@ module PagSeguro
 
         params[:senderName] = sender.name
         params[:senderEmail] =  sender.email
-        params[:senderHash] =  sender.hash_id
 
         serialize_address(sender.address)
         serialize_phone(sender.phone)
@@ -61,17 +60,13 @@ module PagSeguro
       def serialize_pre_approval(pre_approval)
         return unless pre_approval
 
+        params[:preApprovalCharge] = pre_approval.charge
         params[:preApprovalName] = pre_approval.name
         params[:preApprovalDetails] = pre_approval.details
         params[:preApprovalAmountPerPayment] = to_amount(pre_approval.amount_per_payment)
         params[:preApprovalPeriod] = pre_approval.period
-        params[:preApprovalDayOfWeek] = pre_approval.day_of_week
-        params[:preApprovalDayOfMonth] = pre_approval.day_of_month
-        params[:preApprovalDayOfYear] = pre_approval.day_of_year
-        params[:preApprovalInitialDate] = pre_approval.initial_date
         params[:preApprovalFinalDate] = pre_approval.final_date
         params[:preApprovalMaxTotalAmount] = to_amount(pre_approval.max_total_amount)
-        params[:preApprovalCharge] = pre_approval.charge
       end
 
       def to_amount(amount)
