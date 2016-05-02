@@ -33,8 +33,17 @@ module PagSeguro
         params[:senderName] = sender.name
         params[:senderEmail] =  sender.email
 
+        serialize_document(sender.document)
         serialize_address(sender.address)
         serialize_phone(sender.phone)
+      end
+
+      def serialize_document(document)
+         if document.cpf?
+           params[:senderCPF] = document.value
+         else
+          params[:senderCNPJ] = document.value
+        end
       end
 
       def serialize_address(address)
