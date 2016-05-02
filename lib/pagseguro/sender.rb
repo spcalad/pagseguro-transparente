@@ -31,6 +31,7 @@ module PagSeguro
     def initialize(options = {})
       @email = options[:email]
       @name = options[:name]
+      @hash_id = options[:hash_id]
     end
   end
 end

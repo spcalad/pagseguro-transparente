@@ -32,6 +32,7 @@ module PagSeguro
 
         params[:senderName] = sender.name
         params[:senderEmail] =  sender.email
+        params[:senderHash] =  sender.hash_id
 
         serialize_document(sender.document)
         serialize_address(sender.address)
