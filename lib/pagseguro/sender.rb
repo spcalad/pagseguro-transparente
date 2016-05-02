@@ -7,7 +7,7 @@ module PagSeguro
     def_delegators :phone, :area_code, :number
     def_delegators :address, :street, :number, :complement, :district, :postal_code, :city, :state, :country
 
-    validates_presence_of :email, :name, :hash_id, :document, :phone, :address
+    validates_presence_of :email, :name, :phone, :address
 
     # Set the sender e-mail.
     attr_accessor :email
