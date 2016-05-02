@@ -34,7 +34,7 @@ module PagSeguro
         params[:senderEmail] =  sender.email
         params[:senderHash] =  sender.hash_id
 
-        serialize_document(sender.document)
+        serialize_document(sender.document) unless document.nil?
         serialize_address(sender.address)
         serialize_phone(sender.phone)
       end
