@@ -31,8 +31,7 @@ module PagSeguro
         return unless sender
 
         params[:senderName] = sender.name
-        params[:senderEmail] =  sender.email
-        params[:senderHash] =  sender.hash_id
+        params[:senderEmail] = sender.email
 
         serialize_address(sender.address)
         serialize_phone(sender.phone)
